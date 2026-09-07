@@ -1,0 +1,36 @@
+---
+title: Remote Access Tool Deployment Preceding Ransomware Encryption
+id: 9f1e6d5a-7b3c-4a18-90d5-f2a1c8e4b7d3
+status: experimental
+description: Detects the deployment of remote desktop/access tools commonly used by Akira operators for persistence after VPN-based initial access, prior to staging and encryption.
+references:
+    - https://www.microsoft.com/en-us/security/blog/2023/05/23/akira-ransomware/
+    - https://attack.mitre.org/techniques/T1219/
+author: "Threat Intel Portfolio (bikini-lambda session)"
+date: 2026/09/07
+modified: 2026/09/07
+tags:
+    - attack.command_and_control
+    - attack.t1219
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_tools:
+        Image|endswith:
+            - '\AnyDesk.exe'
+            - '\gotoapp.exe'
+            - '\GoToAssist.exe'
+            - '\LogMeIn.exe'
+            - '\TeamViewer.exe'
+            - '\AteraAgent.exe'
+            - '\ScreenConnectService.exe'
+    filter_userexpected:
+        ParentImage|endswith:
+            - '\svchost.exe'
+            - '\services.exe'
+            - '\explorer.exe'
+    condition: selection_tools and not filter_userexpected
+falsepositives:
+    - Legitimate IT helpdesk deployments (review with context)
+level: medium

@@ -1,0 +1,39 @@
+---
+title: Suspicious WinRAR Staging Pattern Linked to Akira Ransomware
+id: 4f9c3f2e-8b47-4a6d-bae1-7f0e1a12c9db
+status: experimental
+description: Detects the WinRAR staging behaviour observed before Akira encryption - solid/archive creation with hard-password protection and fast compression into temporary locations.
+references:
+    - https://www.sentinelone.com/labs/akira-ransomware-returns-again/
+    - https://www.trendmicro.com/vinfo/us/security/news/ransomware-and-cybercrime/akiramoe-ransomware-now-uses-linux-appliances-in-attacks-on-vpn-vendors
+author: "Threat Intel Portfolio (bikini-lambda session)"
+date: 2026/09/07
+modified: 2026/09/07
+tags:
+    - attack.collection
+    - attack.t1560.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_image:
+        Image|endswith:
+            - '\WinRAR.exe'
+            - '\winrar.exe'
+            - '\Rar.exe'
+            - '\rar.exe'
+    selection_args:
+        CommandLine|contains:
+            - 'hp'
+            - 'm1'
+            - 'm2'
+    selection_tmp:
+        CommandLine|contains:
+            - '\AppData\Local\Temp'
+            - '\AppData\Roaming'
+            - '\programdata'
+            - 'C:\Users\Public'
+    condition: selection_image and selection_args and selection_tmp
+falsepositives:
+    - Legitimate administrative use of WinRAR into temp locations
+level: medium

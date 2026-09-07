@@ -1,0 +1,25 @@
+---
+title: Akira Ransomware Encrypted File Marker Creation
+id: 5e7d2c11-3f4b-4d90-b1f7-9a8c0e2d3f4a
+status: experimental
+description: Detects mass creation of files with the `.akira` extension or the Akira ransom note marker, indicative of Akira encryption activity on the host.
+references:
+    - https://www.bleepingcomputer.com/news/security/akira-ransomware-variant/
+    - https://attack.mitre.org/techniques/T1486/
+author: "Threat Intel Portfolio (bikini-lambda session)"
+date: 2026/09/07
+modified: 2026/09/07
+tags:
+    - attack.impact
+    - attack.t1486
+logsource:
+    category: file_event
+    product: windows
+detection:
+    selection_akira_note:
+        TargetFilename|contains:
+            - 'akira_readme'
+    condition: selection_akira_note
+falsepositives:
+    - Local analysis/decoy artefacts placed by security teams
+level: critical
